@@ -120,7 +120,7 @@ var WindowMover = class WindowMover {
       return
     }
     const resultDelay = await this._delayFrames(actor,thisAnimation) // wait once for window size updating
-    if (lastAnimation) this._destroyAnimation(lastAnimation) // remove old transitions
+    if (lastAnimation) this._destroyAnimation(lastAnimation) // remove old transitions (actor easing)
     if (resultDelay) return // If canceled, just return
     global.window_group.insert_child_above(clone,actor) // insert clone on screen
 
@@ -159,4 +159,6 @@ var WindowMover = class WindowMover {
       }
     })
   }
+
+  async _resizeWindow(window,x,y) {}
 }

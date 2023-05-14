@@ -30,7 +30,7 @@ const {
   TILING_STEPS_SIDE,
   TILING_SUCCESSIVE_TIMEOUT,
 } = Me.imports.constants
-const { parseTilingSteps } = Me.imports.utils
+const { parseTilingSteps, StateStorage } = Me.imports.utils
 const { WindowMover } = Me.imports.windowMover
 
 const Domain = Gettext.domain(Me.metadata.uuid)
@@ -47,6 +47,7 @@ class Extension {
     this._settings = ExtensionUtils.getSettings()
     this._osdGapChangedIcon = Gio.icon_new_for_string("view-grid-symbolic")
     this._shortcutsBindingIds = []
+    this._windowState = new StateStorage()
 
     this._bindShortcut("shortcut-align-window-to-center", this._alignWindowToCenter.bind(this))
     this._bindShortcut("shortcut-tile-window-to-center", this._tileWindowCenter.bind(this))
@@ -111,7 +112,6 @@ class Extension {
     const workspaceArea = workspace.get_work_area_for_monitor(monitor)
     const gap = this._gapSize
 
-    
     if (gap <= 0) return {
       x: workspaceArea.x,
       y: workspaceArea.y,
@@ -207,25 +207,28 @@ class Extension {
     const window = global.display.get_focus_window()
     if (!window) return
 
-    const time = Date.now()
-    const center = !(top || bottom || left || right)
-    const prev = this._previousTilingOperation
     const windowId = window.get_id()
+    const now = Date.now()
+    const center = !(top || bottom || left || right)
     const steps = center ? this._tilingStepsCenter : this._tilingStepsSide
-    const successive =
-      prev &&
-      prev.windowId === windowId &&
-      time - prev.time <= this._nextStepTimeout &&
-      prev.top === top &&
-      prev.bottom === bottom &&
-      prev.left === left &&
-      prev.right === right &&
-      prev.iteration < steps.length
-    const iteration = successive ? prev.iteration : 0
-    const step = 1.0 - steps[iteration]
-
     const workArea = this._calculateWorkspaceArea(window)
     let { x, y, width, height } = workArea
+    
+    // get last window tiling state, check timeout/update and update interation
+    const prev = this._windowState.get(windowId)
+    log("[QE] "+prev)
+    const successive =
+      prev && // this window has last state
+      ((!now) || (now - prev.time <= this._nextStepTimeout)) && // check timeout
+      prev.top === top && prev.bottom === bottom && prev.left === left && prev.right === right // check direction matching
+    const iteration = successive && (prev.iteration + 1)%steps.length || 0
+    const step = 1.0 - steps[iteration]
+
+    // update window tiling state
+    this._windowState.add(windowId,{
+      top: top, bottom: bottom, left: left, right: right,
+      time: now, iteration: iteration
+    })
 
     // Special case - when tiling to the center we want the largest size to
     // cover the whole available space
@@ -264,9 +267,6 @@ class Extension {
     width = Math.round(width)
     height = Math.round(height)
     this._windowMover._setWindowRect(window, x, y, width, height, this._isWindowAnimationEnabled)
-
-    this._previousTilingOperation =
-      { windowId, top, bottom, left, right, time, iteration: iteration + 1 }
   }
 
   _tileWindowBottom() {

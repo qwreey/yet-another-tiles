@@ -1,5 +1,64 @@
 const { Gdk, Gtk } = imports.gi
 
+var StateStorage = class StateStorage {
+	constructor() {
+		this._storage = []
+	}
+
+	destroy() {
+		if (this.destroyHook) {
+			for (item of this._storage) {
+				this.destroyHook(item[0],item[1])
+			}
+		}
+		this._storage = null
+	}
+
+	_getIndex(object) {
+		for (let index=0; index<this._storage.length; index++) {
+			if (this._storage[index][0] == object) return index
+		}
+		return -1
+	}
+
+	get(object) {
+		const index = this._getIndex(object)
+		if (index == -1) return undefined
+		return this._storage[index][1]
+	}
+
+	add(object,state,...args) {
+		const index = this._getIndex(object)
+		if (index == -1) {
+			this._storage.push([object,state])
+			if (this.addHook) this.addHook(object,state,...args)
+			return
+		}
+		if (this.updateHook) this.updateHook(object,state,...args)
+		this._storage[index][1] = state
+	}
+
+	emitUpdate(object,...args) {
+		if (!this.updateHook) return
+		const state = this.get(object)
+		if (!state) return
+		this.updateHook(object,state,...args)
+	}
+
+	remove(object,...args) {
+		const index = this._getIndexe(object)
+		if (index == -1) return undefined
+		const state = this._storage[index][1]
+		this._storage.splice(index,1)
+		if (this.removeHook) this.removeHook(object,state,...args)
+		return state
+	}
+
+	has(object) {
+		return this._getIndex(object) != -1
+	}
+}
+
 function isKeyvalForbidden(keyval) {
   const forbiddenKeyvals = [
     Gdk.KEY_Home,

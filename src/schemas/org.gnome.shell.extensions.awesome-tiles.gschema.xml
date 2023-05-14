@@ -128,7 +128,7 @@
       </description>
     </key>
     <key name="next-step-timeout" type="i">
-      <default>2000</default>
+      <default>0</default>
       <summary>Keybinding iterate timeout</summary>
       <description>Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds.</description>
     </key>
