@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-08 05:15+0900\n"
+"POT-Creation-Date: 2023-05-14 19:34+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgid "Keybinding iterate timeout"
 msgstr ""
 
 #: src/prefs.ui:131
-msgid "Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds."
+msgid "Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds. 0 for no timeout"
 msgstr ""
 
 #: src/prefs.ui:176
@@ -178,7 +178,7 @@ msgstr ""
 msgid "Keyboard Shortcut"
 msgstr "Tastenkombination"
 
-#: src/extension.js:183
+#: src/extension.js:172
 #, javascript-format
 msgid "Gap size is now at %d percent"
 msgid_plural "Gap size is now at %d percent"

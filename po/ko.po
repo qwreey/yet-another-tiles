@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-08 05:15+0900\n"
+"POT-Creation-Date: 2023-05-14 19:34+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,8 +44,8 @@ msgid "Keybinding iterate timeout"
 msgstr "키바인딩 반복 타임아웃"
 
 #: src/prefs.ui:131
-msgid "Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds."
-msgstr "키바인당 반복으로 분할 단계를 조정할 수 있는 최대 시간을 지정합니다."
+msgid "Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds. 0 for no timeout"
+msgstr "키바인당 반복으로 분할 단계를 조정할 수 있는 최대 시간을 지정합니다. 0 으로 설정해 타임아웃을 없엡니다"
 
 #: src/prefs.ui:176
 msgid "Gap Size Increments"
@@ -179,12 +179,15 @@ msgstr "새 단축키를 할당하거나 'Backspace' 키를 눌러 비활성화�
 msgid "Keyboard Shortcut"
 msgstr "키보드 단축키"
 
-#: src/extension.js:183
+#: src/extension.js:172
 #, javascript-format
 msgid "Gap size is now at %d percent"
 msgid_plural "Gap size is now at %d percent"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds."
+#~ msgstr "키바인당 반복으로 분할 단계를 조정할 수 있는 최대 시간을 지정합니다."
 
 #~ msgid "Shortcut to increase the gap size by 5."
 #~ msgstr "여백 크기를 5 만큼 증가시키는 단축키를 지정합니다"

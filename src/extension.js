@@ -18,56 +18,50 @@
  */
 
 const ExtensionUtils = imports.misc.extensionUtils
+const Me = ExtensionUtils.getCurrentExtension()
 const Gettext = imports.gettext
 const Main = imports.ui.main
-const { Meta, Shell, Gio } = imports.gi
+const { Gio } = imports.gi
 
-const Me = ExtensionUtils.getCurrentExtension()
-const {
-  GAP_SIZE_MAX,
-  GAP_SIZE_INCREMENTS,
-  TILING_STEPS_CENTER,
-  TILING_STEPS_SIDE,
-  TILING_SUCCESSIVE_TIMEOUT,
-} = Me.imports.constants
-const { parseTilingSteps, StateStorage } = Me.imports.utils
+const { GAP_SIZE_MAX } = Me.imports.constants
+const { StateStorage } = Me.imports.utils
 const { WindowMover } = Me.imports.windowMover
+const { Settings } = Me.imports.settings
 
 const Domain = Gettext.domain(Me.metadata.uuid)
 const { ngettext } = Domain
 
-function init() {
-  ExtensionUtils.initTranslations(Me.metadata.uuid)
-  return new Extension()
+class WindowStateStorage extends StateStorage {
+
 }
 
 class Extension {
   enable() {
     this._windowMover = new WindowMover()
-    this._settings = ExtensionUtils.getSettings()
-    this._osdGapChangedIcon = Gio.icon_new_for_string("view-grid-symbolic")
-    this._shortcutsBindingIds = []
+    this._settings = new Settings()
     this._windowState = new StateStorage()
+    this._osdGapChangedIcon = Gio.icon_new_for_string("view-grid-symbolic")
 
-    this._bindShortcut("shortcut-align-window-to-center", this._alignWindowToCenter.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-center", this._tileWindowCenter.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-left", this._tileWindowLeft.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-right", this._tileWindowRight.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-top", this._tileWindowTop.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-top-left", this._tileWindowTopLeft.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-top-right", this._tileWindowTopRight.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-bottom", this._tileWindowBottom.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-bottom-left", this._tileWindowBottomLeft.bind(this))
-    this._bindShortcut("shortcut-tile-window-to-bottom-right", this._tileWindowBottomRight.bind(this))
-    this._bindShortcut("shortcut-increase-gap-size", this._increaseGapSize.bind(this))
-    this._bindShortcut("shortcut-decrease-gap-size", this._decreaseGapSize.bind(this))
+    this._settings
+      .bindShortcut("shortcut-align-window-to-center",     this._alignWindowToCenter.bind(this))
+      .bindShortcut("shortcut-tile-window-to-center",      this._tileWindowCenter.bind(this))
+      .bindShortcut("shortcut-tile-window-to-left",        this._tileWindowLeft.bind(this))
+      .bindShortcut("shortcut-tile-window-to-right",       this._tileWindowRight.bind(this))
+      .bindShortcut("shortcut-tile-window-to-top",         this._tileWindowTop.bind(this))
+      .bindShortcut("shortcut-tile-window-to-top-left",    this._tileWindowTopLeft.bind(this))
+      .bindShortcut("shortcut-tile-window-to-top-right",   this._tileWindowTopRight.bind(this))
+      .bindShortcut("shortcut-tile-window-to-bottom",      this._tileWindowBottom.bind(this))
+      .bindShortcut("shortcut-tile-window-to-bottom-left", this._tileWindowBottomLeft.bind(this))
+      .bindShortcut("shortcut-tile-window-to-bottom-right",this._tileWindowBottomRight.bind(this))
+      .bindShortcut("shortcut-increase-gap-size",          this._increaseGapSize.bind(this))
+      .bindShortcut("shortcut-decrease-gap-size",          this._decreaseGapSize.bind(this))
   }
 
   disable() {
     this._windowMover.destroy()
+    this._settings.destroy()
     this._osdGapChangedIcon.run_dispose()
-    this._shortcutsBindingIds.forEach((id) => Main.wm.removeKeybinding(id))
-    this._shortcutsBindingIds = this._settings = this._windowMover = this._osdGapChangedIcon = null
+    this._settings = this._windowMover = this._osdGapChangedIcon = null
   }
 
   _alignWindowToCenter() {
@@ -86,21 +80,7 @@ class Extension {
       workspaceArea.y + ((workspaceArea.height - windowArea.height) / 2),
     )
 
-    this._windowMover._setWindowRect(window, x, y, windowArea.width, windowArea.height, this._isWindowAnimationEnabled)
-  }
-
-  _bindShortcut(name, callback) {
-    const mode = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode
-
-    Main.wm.addKeybinding(
-      name,
-      this._settings,
-      Meta.KeyBindingFlags.NONE,
-      mode.ALL,
-      callback
-    )
-
-    this._shortcutsBindingIds.push(name)
+    this._windowMover._setWindowRect(window, x, y, windowArea.width, windowArea.height, this._settings.isWindowAnimationEnabled)
   }
 
   _calculateWorkspaceArea(window) {
@@ -110,7 +90,7 @@ class Extension {
   
     const workspace = window.get_workspace()
     const workspaceArea = workspace.get_work_area_for_monitor(monitor)
-    const gap = this._gapSize
+    const gap = this._settings.gapSize
 
     if (gap <= 0) return {
       x: workspaceArea.x,
@@ -143,30 +123,19 @@ class Extension {
     }
   }
 
-  get _gapSizeIncrements() {
-    return this._settings.get_int("gap-size-increments")
-  }
-
   _decreaseGapSize() {
-    this._gapSize = Math.max(this._gapSize - this._gapSizeIncrements, 0)
-    this._notifyGapSize()
+    this._notifyGapSize(
+      this._settings.gapSize = Math.max(this._settings.gapSize - this._settings.gapSizeIncrements, 0)
+    )
   }
 
   _increaseGapSize() {
-    this._gapSize = Math.min(this._gapSize + this._gapSizeIncrements, GAP_SIZE_MAX)
-    this._notifyGapSize()
+    this._notifyGapSize(
+      this._settings.gapSize = Math.min(this.gapSize + this.gapSizeIncrements, GAP_SIZE_MAX)
+    )
   }
 
-  get _gapSize() {
-    return this._settings.get_int("gap-size")
-  }
-
-  set _gapSize(intValue) {
-    this._settings.set_int("gap-size", intValue)
-  }
-
-  _notifyGapSize() {
-    const gapSize = this._gapSize
+  _notifyGapSize(gapSize) {
     Main.osdWindowManager.show(-1,this._osdGapChangedIcon,
       ngettext(
         'Gap size is now at %d percent',
@@ -177,32 +146,6 @@ class Extension {
     )
   }
 
-  get _isInnerGapsEnabled() {
-    return this._settings.get_boolean("enable-inner-gaps")
-  }
-
-  get _tilingStepsCenter() {
-    return parseTilingSteps(
-      this._settings.get_string("tiling-steps-center"),
-      TILING_STEPS_CENTER,
-    )
-  }
-
-  get _tilingStepsSide() {
-    return parseTilingSteps(
-      this._settings.get_string("tiling-steps-side"),
-      TILING_STEPS_SIDE,
-    )
-  }
-
-  get _isWindowAnimationEnabled() {
-    return this._settings.get_boolean("enable-window-animation")
-  }
-
-  get _nextStepTimeout() {
-    return this._settings.get_int("next-step-timeout")
-  }
-
   _tileWindow(top, bottom, left, right) {
     const window = global.display.get_focus_window()
     if (!window) return
@@ -210,22 +153,23 @@ class Extension {
     const windowId = window.get_id()
     const now = Date.now()
     const center = !(top || bottom || left || right)
-    const steps = center ? this._tilingStepsCenter : this._tilingStepsSide
+    const steps = center ? this._settings.tilingStepsCenter : this._settings.tilingStepsSide
     const workArea = this._calculateWorkspaceArea(window)
     let { x, y, width, height } = workArea
     
     // get last window tiling state, check timeout/update and update interation
     const prev = this._windowState.get(windowId)
-    log("[QE] "+prev)
+    const nextStepTimeout = this._settings.nextStepTimeout
     const successive =
       prev && // this window has last state
-      ((!now) || (now - prev.time <= this._nextStepTimeout)) && // check timeout
+      ((!nextStepTimeout) || (now - prev.time <= nextStepTimeout)) && // check timeout
       prev.top === top && prev.bottom === bottom && prev.left === left && prev.right === right // check direction matching
     const iteration = successive && (prev.iteration + 1)%steps.length || 0
     const step = 1.0 - steps[iteration]
 
     // update window tiling state
     this._windowState.add(windowId,{
+      untiledRect: prev?.untiledRect || window.get_frame_rect(),
       top: top, bottom: bottom, left: left, right: right,
       time: now, iteration: iteration
     })
@@ -250,7 +194,7 @@ class Extension {
       if (!left) x += (workArea.width - width) / (right ? 1 : 2)
       if (!top) y += (workArea.height - height) / (bottom ? 1 : 2)
 
-      if (this._isInnerGapsEnabled && workArea.gaps !== undefined) {
+      if (this._settings.isInnerGapsEnabled && workArea.gaps !== undefined) {
         if (left !== right) {
           if (right) x += workArea.gaps.x / 2
           width -= workArea.gaps.x / 2
@@ -266,7 +210,8 @@ class Extension {
     y = Math.round(y)
     width = Math.round(width)
     height = Math.round(height)
-    this._windowMover._setWindowRect(window, x, y, width, height, this._isWindowAnimationEnabled)
+
+    this._windowMover._setWindowRect(window, x, y, width, height, this._settings.isWindowAnimationEnabled)
   }
 
   _tileWindowBottom() {
@@ -304,4 +249,9 @@ class Extension {
   _tileWindowTopRight() {
     this._tileWindow(true, false, false, true)
   }
+}
+
+function init() {
+  ExtensionUtils.initTranslations(Me.metadata.uuid)
+  return new Extension()
 }

@@ -1,5 +1,3 @@
-var GAP_SIZE_INCREMENTS = 5
-
 var GAP_SIZE_MAX = 25
 
 var TILING_STEPS_CENTER = [1, 0.75, 0.5]
