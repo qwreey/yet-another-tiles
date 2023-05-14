@@ -113,13 +113,14 @@ class Extension {
       gaps.x = gaps.y
       gaps.y = temp
     }
-    
+
     return {
       x: workspaceArea.x + gaps.x,
       y: workspaceArea.y + gaps.y,
       height: workspaceArea.height - (gaps.y * 2),
       width: workspaceArea.width - (gaps.x * 2),
-      gaps,
+      isVertical: isVertical,
+      gaps: gaps,
     }
   }
 
@@ -177,9 +178,6 @@ class Extension {
     // Special case - when tiling to the center we want the largest size to
     // cover the whole available space
     if (center) {
-      const monitor = window.get_monitor()
-      const monitorGeometry = global.display.get_monitor_geometry(monitor)
-      const isVertical = monitorGeometry.width < monitorGeometry.height
       const widthStep = isVertical ? step / 2 : step
       const heightStep = isVertical ? step : step / 2
 
