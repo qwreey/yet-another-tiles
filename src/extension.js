@@ -21,25 +21,22 @@ const ExtensionUtils = imports.misc.extensionUtils
 const Me = ExtensionUtils.getCurrentExtension()
 const Gettext = imports.gettext
 const Main = imports.ui.main
-const { Gio } = imports.gi
+const { Meta, Gio } = imports.gi
 
 const { GAP_SIZE_MAX } = Me.imports.constants
-const { StateStorage } = Me.imports.utils
 const { WindowMover } = Me.imports.windowMover
+const { WindowStateStorage } = Me.imports.windowStateStorage
+
 const { Settings } = Me.imports.settings
 
 const Domain = Gettext.domain(Me.metadata.uuid)
 const { ngettext } = Domain
 
-class WindowStateStorage extends StateStorage {
-
-}
-
 class Extension {
   enable() {
-    this._windowMover = new WindowMover()
     this._settings = new Settings()
-    this._windowState = new StateStorage()
+    this._windowMover = new WindowMover()
+    this._windowState = new WindowStateStorage(this._settings)
     this._osdGapChangedIcon = Gio.icon_new_for_string("view-grid-symbolic")
 
     this._settings
@@ -59,9 +56,10 @@ class Extension {
 
   disable() {
     this._windowMover.destroy()
+    this._windowState.destroy()
     this._settings.destroy()
     this._osdGapChangedIcon.run_dispose()
-    this._settings = this._windowMover = this._osdGapChangedIcon = null
+    this._windowMover = this._windowState = this._settings = this._osdGapChangedIcon = null
   }
 
   _alignWindowToCenter() {
@@ -128,12 +126,20 @@ class Extension {
     this._notifyGapSize(
       this._settings.gapSize = Math.max(this._settings.gapSize - this._settings.gapSizeIncrements, 0)
     )
+    this._windowState._storage.forEach(item=>{
+      const state = item[1]
+      this._tileWindow(state.window, false, state.top, state.bottom, state.left, state.right)
+    })
   }
 
   _increaseGapSize() {
     this._notifyGapSize(
-      this._settings.gapSize = Math.min(this.gapSize + this.gapSizeIncrements, GAP_SIZE_MAX)
+      this._settings.gapSize = Math.min(this._settings.gapSize + this._settings.gapSizeIncrements, GAP_SIZE_MAX)
     )
+    this._windowState._storage.forEach(item=>{
+      const state = item[1]
+      this._tileWindow(state.window, false, state.top, state.bottom, state.left, state.right)
+    })
   }
 
   _notifyGapSize(gapSize) {
@@ -147,8 +153,8 @@ class Extension {
     )
   }
 
-  _tileWindow(top, bottom, left, right) {
-    const window = global.display.get_focus_window()
+  _tileWindow(window, updateIteration, top, bottom, left, right) {
+    window ??= global.display.get_focus_window()
     if (!window) return
 
     const windowId = window.get_id()
@@ -165,21 +171,21 @@ class Extension {
       prev && // this window has last state
       ((!nextStepTimeout) || (now - prev.time <= nextStepTimeout)) && // check timeout
       prev.top === top && prev.bottom === bottom && prev.left === left && prev.right === right // check direction matching
-    const iteration = successive && (prev.iteration + 1)%steps.length || 0
+    const iteration = successive && (prev.iteration + (updateIteration ? 1 : 0))%steps.length || 0
     const step = 1.0 - steps[iteration]
 
     // update window tiling state
     this._windowState.add(windowId,{
       untiledRect: prev?.untiledRect || window.get_frame_rect(),
       top: top, bottom: bottom, left: left, right: right,
-      time: now, iteration: iteration
+      time: now, iteration: iteration, window: window
     })
 
     // Special case - when tiling to the center we want the largest size to
     // cover the whole available space
     if (center) {
-      const widthStep = isVertical ? step / 2 : step
-      const heightStep = isVertical ? step : step / 2
+      const widthStep = workArea.isVertical ? step / 2 : step
+      const heightStep = workArea.isVertical ? step : step / 2
 
       width -= width * widthStep
       height -= height * heightStep
@@ -213,39 +219,39 @@ class Extension {
   }
 
   _tileWindowBottom() {
-    this._tileWindow(false, true, true, true)
+    this._tileWindow(null, true, false, true, true, true)
   }
 
   _tileWindowBottomLeft() {
-    this._tileWindow(false, true, true, false)
+    this._tileWindow(null, true, false, true, true, false)
   }
 
   _tileWindowBottomRight() {
-    this._tileWindow(false, true, false, true)
+    this._tileWindow(null, true, false, true, false, true)
   }
 
   _tileWindowCenter() {
-    this._tileWindow(false, false, false, false)
+    this._tileWindow(null, true, false, false, false, false)
   }
 
   _tileWindowLeft() {
-    this._tileWindow(true, true, true, false)
+    this._tileWindow(null, true, true, true, true, false)
   }
 
   _tileWindowRight() {
-    this._tileWindow(true, true, false, true)
+    this._tileWindow(null, true, true, true, false, true)
   }
 
   _tileWindowTop() {
-    this._tileWindow(true, false, true, true)
+    this._tileWindow(null, true, true, false, true, true)
   }
 
   _tileWindowTopLeft() {
-    this._tileWindow(true, false, true, false)
+    this._tileWindow(null, true, true, false, true, false)
   }
 
   _tileWindowTopRight() {
-    this._tileWindow(true, false, false, true)
+    this._tileWindow(null, true, true, false, false, true)
   }
 }
 

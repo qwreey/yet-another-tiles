@@ -77,6 +77,7 @@ var WindowMover = class WindowMover {
   }
 
   async _setWindowRect(window, x, y, width, height, animate) {
+
     const actor = window.get_compositor_private()
     const isMaximized = window.get_maximized()
     const lastAnimation = this._windowAnimations.find(item=>item.window === window)
@@ -103,6 +104,14 @@ var WindowMover = class WindowMover {
       clone = animate && this._captureWindow(actor,outterRectBefore)
       window.unmaximize(Meta.MaximizeFlags.BOTH)
       actor.remove_all_transitions() // remove unmaximize animation
+    }
+
+    // in another workspace
+    if (!window.showing_on_its_workspace()) {
+      if (lastAnimation) this._destroyAnimation(lastAnimation,animate)
+      window.move_resize_frame(false, x, y, width, height)
+      actor.thaw()
+      return
     }
 
     // save this animation / clone window

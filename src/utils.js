@@ -46,7 +46,7 @@ var StateStorage = class StateStorage {
 	}
 
 	remove(object,...args) {
-		const index = this._getIndexe(object)
+		const index = this._getIndex(object)
 		if (index == -1) return undefined
 		const state = this._storage[index][1]
 		this._storage.splice(index,1)
