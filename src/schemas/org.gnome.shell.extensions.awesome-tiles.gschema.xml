@@ -120,6 +120,13 @@
         Put gaps between windows.
       </description>
     </key>
+    <key name="restore-window-size" type="b">
+      <default>true</default>
+      <summary>Restore Window Size</summary>
+      <description>
+        Restore window size when move tiled window.
+      </description>
+    </key>
     <key name="enable-window-animation" type="b">
       <default>true</default>
       <summary>Enable window animation</summary>

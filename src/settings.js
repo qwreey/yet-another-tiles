@@ -37,6 +37,10 @@ var Settings = class Settings {
     return this
   }
 
+  get restoreWindowSize() {
+    return this._settings.get_boolean("restore-window-size")
+  }
+
   get gapSizeIncrements() {
     return this._settings.get_int("gap-size-increments")
   }

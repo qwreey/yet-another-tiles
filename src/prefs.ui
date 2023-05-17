@@ -1,919 +1,415 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="awesome-tiles@velitasali.com">
   <requires lib="gtk" version="4.0" />
-  <template class="AwesomeTilesPrefsWidget" parent="GtkBox">
-    <property name="height-request">500</property>
-    <property name="width-request">700</property>
-    <property name="orientation">vertical</property>
-    <property name="baseline-position">top</property>
+
+  <!--
+  =====================================================================
+  ===                         Action Menu                           ===
+  =====================================================================
+  -->
+  <menu id="action-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Report a Bug</attribute>
+        <attribute name="action">prefs.open-bug-report</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">User Guide</attribute>
+        <attribute name="action">prefs.open-user-guide</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">License</attribute>
+        <attribute name="action">prefs.open-license</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Changelog</attribute>
+        <attribute name="action">prefs.open-changelog</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Advanced...</attribute>
+        <attribute name="action">prefs.open-hidden-settings</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!--
+  =====================================================================
+  ===                        Page: General                          ===
+  =====================================================================
+  -->
+  <object class="AdwPreferencesPage" id="general">
+    <property name="title" translatable="yes">General</property>
+    <property name="icon-name">emblem-system-symbolic</property>
+
+    <!--
+    =====================================================================
+    ===                        Group: General                         ===
+    =====================================================================
+    -->
     <child>
-      <object class="GtkFrame" id="general">
-        <property name="halign">center</property>
-        <property name="margin-start">36</property>
-        <property name="margin-end">36</property>
-        <property name="margin-top">18</property>
-        <property name="margin-bottom">18</property>
-        <property name="child">
-          <object class="GtkListBox">
-            <property name="selection-mode">none</property>
+      <object class="AdwPreferencesGroup">
+        <property name="title" translatable="yes">General</property>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Restore window size</property>
+            <property name="subtitle" translatable="yes">Restore window size when move tiled window.</property>
             <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Enable window animation</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Add animation on windows. (In Wayland, this option will very buggy)</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSwitch" id="enable_window_animation">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
+              <object class="GtkSwitch" id="restore_window_size">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Enable window animation</property>
+            <property name="subtitle" translatable="yes">Add animation on windows. (In Wayland, this option will very buggy)</property>
             <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Gap Between Window and Workspace</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Percentage to leave out as gap when the window in focus is tiled.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="gap_size">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
+              <object class="GtkSwitch" id="enable_window_animation">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
               </object>
             </child>
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <!--
+    =====================================================================
+    ===                         Group: Gaps                           ===
+    =====================================================================
+    -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title" translatable="yes">Gaps</property>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Gap Between Window and Workspace</property>
+            <property name="subtitle" translatable="yes">Percentage to leave out as gap when the window in focus is tiled.</property>
             <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Keybinding iterate timeout</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds. 0 for no timeout</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="next_step_timeout">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="adjustment">
-                          <object class="GtkAdjustment">
-                            <property name="lower">0</property>
-                            <property name="upper">10000</property>
-                            <property name="step-increment">1</property>
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Gap Size Increments</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Determine how much gap size adjust by keybinding.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="gap_size_increments">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="adjustment">
-                          <object class="GtkAdjustment">
-                            <property name="lower">1</property>
-                            <property name="upper">24</property>
-                            <property name="step-increment">1</property>
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Gaps Between Windows</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Put gaps between windows.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSwitch" id="gaps_between_windows">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Center Tiling Steps</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Steps on each key press (values between 0-1).</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="tiling_steps_center">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="editable">true</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Side Tiling Steps</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Steps on each key press (values between 0-1).</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="tiling_steps_side">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="editable">true</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Align Window to Center</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to align the window in focus to center without resizing it.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="align_window_to_center">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-align-window-to-center</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Increase the Gap Size</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to increase the gap size.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="increase_gap_size">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-increase-gap-size</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Decrease the Gap Size</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to decrease the gap size.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="decrease_gap_size">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-decrease-gap-size</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Center</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to center.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_center">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-center</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Left</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to left.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_left">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-left</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Right</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to right.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_right">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-right</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Top</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to top.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_top">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-top</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Bottom</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to bottom.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_bottom">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-bottom</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Top Left</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to top left.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_top_left">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-top-left</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Top Right</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to top right.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_top_right">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-top-right</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Bottom Left</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to bottom left.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_bottom_left">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-bottom-left</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <property name="margin-top">16</property>
-                    <property name="margin-bottom">16</property>
-                    <property name="spacing">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tile Window to Bottom Right</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="valign">center</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Shortcut to tile the window in focus to bottom right.</property>
-                            <property name="use-markup">1</property>
-                            <property name="wrap">1</property>
-                            <property name="max-width-chars">50</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="tile_window_to_bottom_right">
-                        <property name="hexpand">1</property>
-                        <property name="halign">end</property>
-                        <property name="valign">center</property>
-                        <property name="name">shortcut-tile-window-to-bottom-right</property>
-                        <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
-                      </object>
-                    </child>
+              <object class="GtkSpinButton" id="gap_size">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">25</property>
+                    <property name="step-increment">1</property>
                   </object>
                 </property>
               </object>
             </child>
           </object>
-        </property>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Gaps Between Windows</property>
+            <property name="subtitle" translatable="yes">Put gaps between windows.</property>
+            <child>
+              <object class="GtkSwitch" id="gaps_between_windows">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
-  </template>
+
+    <!--
+    =====================================================================
+    ===                        Group: Steps                           ===
+    =====================================================================
+    -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title" translatable="yes">Steps</property>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Center Tiling Steps</property>
+            <property name="subtitle" translatable="yes">Steps on each key press (values between 0-1).</property>
+            <child>
+              <object class="GtkEntry" id="tiling_steps_center">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="editable">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Side Tiling Steps</property>
+            <property name="subtitle" translatable="yes">Steps on each key press (values between 0-1).</property>
+            <child>
+              <object class="GtkEntry" id="tiling_steps_side">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="editable">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+
+  <!--
+  =====================================================================
+  ===                       Page: Keybinding                        ===
+  =====================================================================
+  -->
+  <object class="AdwPreferencesPage" id="keybinding">
+    <property name="title" translatable="yes">Keybinding</property>
+    <property name="icon-name">input-keyboard-symbolic</property>
+    <!--
+    =====================================================================
+    ===                    Group: Gap Keybinding                      ===
+    =====================================================================
+    -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title" translatable="yes">Gap Keybinding</property>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Gap Size Increments</property>
+            <property name="subtitle" translatable="yes">Determine how much gap size adjust by keybinding.</property>
+            <child>
+              <object class="GtkSpinButton" id="gap_size_increments">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">24</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Increase the Gap Size</property>
+            <property name="subtitle" translatable="yes">Shortcut to increase the gap size.</property>
+            <child>
+              <object class="GtkButton" id="increase_gap_size">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-increase-gap-size</property>
+                <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Decrease the Gap Size</property>
+            <property name="subtitle" translatable="yes">Shortcut to decrease the gap size.</property>
+            <child>
+              <object class="GtkButton" id="decrease_gap_size">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-decrease-gap-size</property>
+                <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <!--
+    =====================================================================
+    ===                  Group: Tiling Keybinding                     ===
+    =====================================================================
+    -->
+    <child>
+      <object class="AdwPreferencesGroup">
+        <property name="title" translatable="yes">Tiling Keybinding</property>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Keybinding iterate timeout</property>
+            <property name="subtitle" translatable="yes">Maximum time of you can adjust tiling step by iterating same keybinding in milliseconds. 0 for no timeout</property>
+            <child>
+              <object class="GtkSpinButton" id="next_step_timeout">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">10000</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Align Window to Center</property>
+            <property name="subtitle" translatable="yes">Shortcut to align the window in focus to center without resizing it.</property>
+            <child>
+              <object class="GtkButton" id="align_window_to_center">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-align-window-to-center</property>
+                <signal name="clicked" handler="_onAssignShortcut" swapped="no" />
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Center</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to center.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_center">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-center</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Left</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to left.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_left">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-left</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Right</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to right.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_right">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-right</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Top</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to top.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_top">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-top</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Bottom</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to bottom.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_bottom">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-bottom</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Top Left</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to top left.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_top_left">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-top-left</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Top Right</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to top right.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_top_right">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-top-right</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Bottom Left</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to bottom left.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_bottom_left">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-bottom-left</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Tile Window to Bottom Right</property>
+            <property name="subtitle" translatable="yes">Shortcut to tile the window in focus to bottom right.</property>
+            <child>
+              <object class="GtkButton" id="tile_window_to_bottom_right">
+                <property name="hexpand">1</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="name">shortcut-tile-window-to-bottom-right</property>
+                <signal name="clicked" swapped="no" handler="_onAssignShortcut"/>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
