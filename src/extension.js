@@ -169,7 +169,7 @@ class Extension {
     const nextStepTimeout = this._settings.nextStepTimeout
     const successive =
       prev && // this window has last state
-      ((!nextStepTimeout) || (now - prev.time <= nextStepTimeout)) && // check timeout
+      ((nextStepTimeout === 0) || (now - prev.time <= nextStepTimeout)) && // check timeout
       prev.top === top && prev.bottom === bottom && prev.left === left && prev.right === right // check direction matching
     const iteration = successive && (prev.iteration + (updateIteration ? 1 : 0))%steps.length || 0
     const step = 1.0 - steps[iteration]

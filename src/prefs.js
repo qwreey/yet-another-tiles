@@ -21,6 +21,10 @@ const { Gdk, Gio, GLib, GObject, Gtk } = imports.gi
 const Gettext = imports.gettext
 const ExtensionUtils = imports.misc.extensionUtils
 
+// libadwaita is available after GNOME Shell 42
+let Adw = null
+try { Adw = imports.gi.Adw } catch {}
+
 const Me = ExtensionUtils.getCurrentExtension()
 const Constants = Me.imports.constants
 const Utils = Me.imports.utils
@@ -38,7 +42,7 @@ var PrefsWidget = GObject.registerClass({
     this._window = window
 
     this._createBuilder()
-    this._createActions()
+    if (Adw) this._createActions()
     this._bindSettings()
     this._bindShortcutWidgets()
 
@@ -56,7 +60,7 @@ var PrefsWidget = GObject.registerClass({
     const builder = this._builder = new Gtk.Builder()
     builder.set_scope(this)
     builder.set_translation_domain(Me.metadata.uuid)
-    builder.add_from_file(Me.dir.get_child('prefs.ui').get_path())
+    builder.add_from_file(Me.dir.get_child(Adw ? 'prefs.adw.ui' : 'prefs.gtk.ui').get_path())
 
     const InternalChildren = [
       'restore_window_size',
@@ -86,16 +90,16 @@ var PrefsWidget = GObject.registerClass({
   
   _createActions() {
     // Many extensions are uses this hack. such as Search Light, Destkop Cube, Burn My Windows and Blur my Shell ...
-    let menu_util = builder.get_object('menu_util');
-    window.add(menu_util);
+    let menu_util = builder.get_object('menu_util')
+    window.add(menu_util)
 
     // a little hack to get to the headerbar
-    const page = this._builder.get_object('menu_util');
-    const pages_stack = page.get_parent(); // AdwViewStack
-    const content_stack = pages_stack.get_parent().get_parent(); // GtkStack
-    const preferences = content_stack.get_parent(); // GtkBox
-    const headerbar = preferences.get_first_child(); // AdwHeaderBar
-    headerbar.pack_start(builder.get_object('info_menu'));
+    const page = this._builder.get_object('menu_util')
+    const pages_stack = page.get_parent() // AdwViewStack
+    const content_stack = pages_stack.get_parent().get_parent() // GtkStack
+    const preferences = content_stack.get_parent() // GtkBox
+    const headerbar = preferences.get_first_child() // AdwHeaderBar
+    headerbar.pack_start(builder.get_object('info_menu'))
 
 
     const actionGroup = this._actions = new Gio.SimpleActionGroup()
@@ -272,3 +276,5 @@ function fillPreferencesWindow(window) {
   const perfs = new PrefsWidget(window)
   perfs._pages.forEach(page=>window.add(page))
 }
+
+function buildPrefsWidget() {}
