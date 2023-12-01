@@ -88,13 +88,13 @@ const { FakeWindow, EqualInEPSILON } = require("./utility")
     root1.setBase(tree1)
     root1.flatten()
 
-    console.log("windowTree.js:complicated-flatting " +(
-    tree1.children[0] === fakewin1 &&
-    tree1.children[1] === fakewin2 &&
-    tree1.children[2] === fakewin3 &&
-    EqualInEPSILON(tree1.ratio[0],1/3) &&
-    EqualInEPSILON(tree1.ratio[1],1/3) &&
-    EqualInEPSILON(tree1.ratio[2],1/3) ? "PASS!" : "FAIL!"))
+    console.log("windowTree.js:deep-single-child-flatting " +(
+    root1.base.children[0] === fakewin1 &&
+    root1.base.children[1] === fakewin2 &&
+    root1.base.children[2] === fakewin3 &&
+    EqualInEPSILON(root1.base.ratio[0],1/3) &&
+    EqualInEPSILON(root1.base.ratio[1],1/3) &&
+    EqualInEPSILON(root1.base.ratio[2],1/3) ? "PASS!" : "FAIL!"))
 }
 
 { // deep no child flatting
@@ -119,10 +119,10 @@ const { FakeWindow, EqualInEPSILON } = require("./utility")
     root1.flatten()
 
     console.log("windowTree.js:no-child-flatting " +(
-    tree1.children[0] === fakewin1 &&
-    tree1.children[1] === fakewin2 &&
-    EqualInEPSILON(tree1.ratio[0],1/2) &&
-    EqualInEPSILON(tree1.ratio[1],1/2) ? "PASS!" : "FAIL!"))
+    root1.base.children[0] === fakewin1 &&
+    root1.base.children[1] === fakewin2 &&
+    EqualInEPSILON(root1.base.ratio[0],1/2) &&
+    EqualInEPSILON(root1.base.ratio[1],1/2) ? "PASS!" : "FAIL!"))
 }
 
 { // complicated flatting
@@ -154,12 +154,12 @@ const { FakeWindow, EqualInEPSILON } = require("./utility")
     root1.flatten()
 
     console.log("windowTree.js:complicated-flatting " +(
-    tree1.children[0] === fakewin1 &&
-    tree1.children[1] === fakewin2 &&
-    tree1.children[2] === fakewin3 &&
-    EqualInEPSILON(tree1.ratio[0],1/3) &&
-    EqualInEPSILON(tree1.ratio[1],1/3) &&
-    EqualInEPSILON(tree1.ratio[2],1/3) ? "PASS!" : "FAIL!"))
+    root1.base.children[0] === fakewin1 &&
+    root1.base.children[1] === fakewin2 &&
+    root1.base.children[2] === fakewin3 &&
+    EqualInEPSILON(root1.base.ratio[0],1/3) &&
+    EqualInEPSILON(root1.base.ratio[1],1/3) &&
+    EqualInEPSILON(root1.base.ratio[2],1/3) ? "PASS!" : "FAIL!"))
 }
 
 { // merging flatting
@@ -181,10 +181,34 @@ const { FakeWindow, EqualInEPSILON } = require("./utility")
     root1.flatten()
 
     console.log("windowTree.js:merging-flatting " +(
-    tree1.children[0] === fakewin1 &&
-    tree1.children[1] === fakewin2 &&
-    tree1.children[2] === fakewin3 &&
-    EqualInEPSILON(tree1.ratio[0],1/2) &&
-    EqualInEPSILON(tree1.ratio[1],1/4) &&
-    EqualInEPSILON(tree1.ratio[2],1/4) ? "PASS!" : "FAIL!"))
+    root1.base.children[0] === fakewin1 &&
+    root1.base.children[1] === fakewin2 &&
+    root1.base.children[2] === fakewin3 &&
+    EqualInEPSILON(root1.base.ratio[0],1/2) &&
+    EqualInEPSILON(root1.base.ratio[1],1/4) &&
+    EqualInEPSILON(root1.base.ratio[2],1/4) ? "PASS!" : "FAIL!"))
+}
+
+{ // stairs flatting
+    let fakewin1,fakewin2
+
+    const root1 = new WindowTreeRoot()
+    const tree1 = new WindowTree(TreeTypes.Vertical)
+
+    const tree1_1 = new WindowTree(TreeTypes.Horizontal)
+    tree1.insertAt(tree1_1,0)
+    tree1_1.insertAt(fakewin1 = new FakeWindow(),0)
+
+    const tree1_1_1 = new WindowTree(TreeTypes.Vertical)
+    tree1_1.insertAt(tree1_1_1,1)
+    tree1_1_1.insertAt(fakewin2 = new FakeWindow(),0)
+
+    root1.setBase(tree1)
+    root1.flatten()
+
+    console.log("windowTree.js:stairs-flatting " +(
+    root1.base.children[0] === fakewin1 &&
+    root1.base.children[1] === fakewin2 &&
+    EqualInEPSILON(root1.base.ratio[0],1/2) &&
+    EqualInEPSILON(root1.base.ratio[1],1/2) ? "PASS!" : "FAIL!"))
 }
