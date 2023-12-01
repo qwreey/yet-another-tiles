@@ -1,11 +1,7 @@
 <schemalist gettext-domain="yet-another-tiles@qwreey">
   <schema id="org.gnome.shell.extensions.yet-another-tiles" path="/org/gnome/shell/extensions/yet-another-tiles/">
-    <key name="gap-size" type="i">
-      <default>15</default>
-      <summary>Gap Between Window and Workspace</summary>
-      <description>Percentage to leave out as gap when the window in focus is tiled.</description>
-    </key>
-    <key name="shortcut-tile-window-to-center" type="as">
+    <!-- Key bindings -->
+        <key name="shortcut-tile-window-to-center" type="as">
       <default>
         <![CDATA[['<Super>KP_5']]]>
       </default>
@@ -112,6 +108,12 @@
       <description>
         Shortcut to decrease the gap size.
       </description>
+    </key>
+
+    <key name="gap-size" type="i">
+      <default>15</default>
+      <summary>Gap Between Window and Workspace</summary>
+      <description>Percentage to leave out as gap when the window in focus is tiled.</description>
     </key>
     <key name="enable-inner-gaps" type="b">
       <default>true</default>

@@ -15,7 +15,7 @@ function pack-extension {
     --force \
     --podir="../po" \
     --extra-source="constants.js" \
-    --extra-source="prefs.ui" \
+    --extra-source="prefs.gtk.ui" \
     --extra-source="prefs.adw.ui" \
     --extra-source="prefs-shortcut-dialog.ui" \
     --extra-source="utils.js" \
@@ -45,8 +45,10 @@ function usage() {
     echo 'COMMAND:'
     echo "  local-install  install the extension in the user's home directory"
     echo '                 under ~/.local'
-    echo '  zip            Creates a zip file of the extension'
-    echo '  update-po      Update po files to match source files'
+    echo '  zip            creates a zip file of the extension'
+    echo '  update-po      update po files to match source files'
+    echo '  dev            install the extension and restart shell'
+    echo '  prefs          show extension prefs'
 }
 
 function update-po() {
@@ -59,9 +61,11 @@ function update-po() {
 
 case "$1" in
     "local-install" )
-        compile-preferences
-        pack-extension
-        gnome-extensions install --force $NAME.shell-extension.zip && restart-shell
+        compile-preferences && pack-extension && gnome-extensions install --force $NAME.shell-extension.zip
+    ;;
+
+    "dev" )
+        compile-preferences && pack-extension && gnome-extensions install --force $NAME.shell-extension.zip && restart-shell
     ;;
     
     "zip" )
