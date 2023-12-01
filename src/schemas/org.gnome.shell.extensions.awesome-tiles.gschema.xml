@@ -1,5 +1,5 @@
-<schemalist gettext-domain="awesome-tiles@velitasali.com">
-  <schema id="org.gnome.shell.extensions.awesome-tiles" path="/org/gnome/shell/extensions/awesome-tiles/">
+<schemalist gettext-domain="yet-another-tiles@qwreey">
+  <schema id="org.gnome.shell.extensions.yet-another-tiles" path="/org/gnome/shell/extensions/yet-another-tiles/">
     <key name="gap-size" type="i">
       <default>15</default>
       <summary>Gap Between Window and Workspace</summary>

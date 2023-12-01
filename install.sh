@@ -7,7 +7,7 @@ if [ "$UID" = "0" ]; then
     exit 101
 fi
 
-NAME=awesome-tiles\@velitasali.com
+NAME=yet-another-tiles\@qwreey
 
 function pack-extension {
     echo "Packing extension..."
@@ -16,6 +16,7 @@ function pack-extension {
     --podir="../po" \
     --extra-source="constants.js" \
     --extra-source="prefs.ui" \
+    --extra-source="prefs.adw.ui" \
     --extra-source="prefs-shortcut-dialog.ui" \
     --extra-source="utils.js" \
     --extra-source="windowStateStorage.js" \

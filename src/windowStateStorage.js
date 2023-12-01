@@ -16,13 +16,13 @@ var WindowStateStorage = class WindowStateStorage extends StateStorage {
       const moveWindow = moveOps.includes(op & ~1024)
 
       // restore window size when user drags window
-      this.remove(window.get_id(),moveWindow)
+      this.remove(window.get_description(),moveWindow)
     })
 
     // remove window state when user resizes window
     this._sizeChangeId = global.window_manager.connect('size-change', (wm, actor, op, oldFrameRect, oldBufferRect) => {
       if (!actor) return
-      this.remove(actor.meta_window.get_id(),false)
+      this.remove(actor.meta_window.get_description(),false)
     })
   }
 

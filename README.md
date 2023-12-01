@@ -1,4 +1,6 @@
-# Awesome Tiles 
+# Yet Another Tiles 
+
+Yet Another Tiles is a hard fork of Awesome Tiles which was created by velitasali and contributors.
 
 Awesome Tiles is a tiling manager extension for GNOME Shell that makes it easy to move 
 windows around with precision. It does that with reconfigurable keyboard shortcuts 

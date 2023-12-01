@@ -55,7 +55,7 @@ var WindowMover = class WindowMover {
       animation?.clone?.remove_all_transitions()
       animation?.clone?.destroy()
       if (actor) {
-        actor.actor?.remove_all_transitions()
+        actor.remove_all_transitions()
         actor.scale_x = 1
         actor.scale_y = 1
         actor.translation_x = 0

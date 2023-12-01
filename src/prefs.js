@@ -42,7 +42,7 @@ var PrefsWidget = GObject.registerClass({
     this._window = window
 
     this._createBuilder()
-    if (Adw) this._createActions()
+    // if (Adw) this._createActions()
     this._bindSettings()
     this._bindShortcutWidgets()
 
@@ -60,7 +60,7 @@ var PrefsWidget = GObject.registerClass({
     const builder = this._builder = new Gtk.Builder()
     builder.set_scope(this)
     builder.set_translation_domain(Me.metadata.uuid)
-    builder.add_from_file(Me.dir.get_child(Adw ? 'prefs.adw.ui' : 'prefs.gtk.ui').get_path())
+    builder.add_from_file(GLib.build_filenamev([Me.path, Adw ? 'prefs.adw.ui' : 'prefs.gtk.ui']))
 
     const InternalChildren = [
       'restore_window_size',
@@ -88,31 +88,31 @@ var PrefsWidget = GObject.registerClass({
     InternalChildren.forEach(id=>this['_'+id]=builder.get_object(id))
   }
   
-  _createActions() {
-    // Many extensions are uses this hack. such as Search Light, Destkop Cube, Burn My Windows and Blur my Shell ...
-    let menu_util = builder.get_object('menu_util')
-    window.add(menu_util)
+  // _createActions() {
+  //   // Many extensions are uses this hack. such as Search Light, Destkop Cube, Burn My Windows and Blur my Shell ...
+  //   let menu_util = this._builder.get_object('menu_util')
+  //   // window.add(menu_util)
 
-    // a little hack to get to the headerbar
-    const page = this._builder.get_object('menu_util')
-    const pages_stack = page.get_parent() // AdwViewStack
-    const content_stack = pages_stack.get_parent().get_parent() // GtkStack
-    const preferences = content_stack.get_parent() // GtkBox
-    const headerbar = preferences.get_first_child() // AdwHeaderBar
-    headerbar.pack_start(builder.get_object('info_menu'))
+  //   // a little hack to get to the headerbar
+  //   const page = this._builder.get_object('menu_util')
+  //   const pages_stack = page.get_parent() // AdwViewStack
+  //   const content_stack = pages_stack.get_parent().get_parent() // GtkStack
+  //   const preferences = content_stack.get_parent() // GtkBox
+  //   const headerbar = preferences.get_first_child() // AdwHeaderBar
+  //   headerbar.pack_start(this._builder.get_object('info_menu'))
 
 
-    const actionGroup = this._actions = new Gio.SimpleActionGroup()
-    this._window.insert_action_group('prefs', actionGroup)
+  //   const actionGroup = this._actions = new Gio.SimpleActionGroup()
+  //   this._window.insert_action_group('prefs', actionGroup)
 
-    const repositoryAction = new Gio.SimpleAction({ name: 'open-source' })
-    repositoryAction.connect('activate', this._openURL.bind(this,"https://github.com/velitasali/gnome-shell-extension-awesome-tiles"))
-    actionGroup.add_action(repositoryAction)
+  //   const repositoryAction = new Gio.SimpleAction({ name: 'open-source' })
+  //   repositoryAction.connect('activate', this._openURL.bind(this,"https://github.com/velitasali/gnome-shell-extension-awesome-tiles"))
+  //   actionGroup.add_action(repositoryAction)
 
-    const bugReportAction = new Gio.SimpleAction({ name: 'open-bug-report' })
-    bugReportAction.connect('activate', this._openURL.bind(this,"https://github.com/velitasali/gnome-shell-extension-awesome-tiles/issues/new"))
-    actionGroup.add_action(bugReportAction)
-  }
+  //   const bugReportAction = new Gio.SimpleAction({ name: 'open-bug-report' })
+  //   bugReportAction.connect('activate', this._openURL.bind(this,"https://github.com/velitasali/gnome-shell-extension-awesome-tiles/issues/new"))
+  //   actionGroup.add_action(bugReportAction)
+  // }
 
   _bindSettings() {
     this._settings.bind(
@@ -277,4 +277,6 @@ function fillPreferencesWindow(window) {
   perfs._pages.forEach(page=>window.add(page))
 }
 
-function buildPrefsWidget() {}
+function buildPrefsWidget() {
+  return new PrefsWidget()._toWidget()
+}
