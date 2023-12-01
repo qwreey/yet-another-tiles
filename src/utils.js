@@ -117,3 +117,12 @@ function parseTilingSteps(value, defaultValue) {
     return defaultValue
   }
 }
+
+function equalInEPSILON(resultV,expectedV) {
+    const diff = resultV-expectedV
+    return diff < Number.EPSILON && diff > -Number.EPSILON
+}
+
+var ChangeTracker = class ChangeTracker {
+	constructor() {}
+}
