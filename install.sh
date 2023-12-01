@@ -72,6 +72,10 @@ case "$1" in
     "update-po" )
         update-po
     ;;
+
+    "prefs" )
+        gnome-extensions prefs $NAME
+    ;;
     
     * )
         usage
