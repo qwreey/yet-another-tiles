@@ -144,10 +144,20 @@ var WindowTree = class WindowTree {
     }
 
     splitAt(target,side,window) {
-        if (typeof target !== "number") this.children.indexOf(target)
+        if (typeof target !== "number") target = this.children.indexOf(target)
+        if (target === -1) throw Error(`Target must be a number or a child. but got ${target+[]}`)
         const newRatio = this.ratio[target] / 2
         this.ratio.splice(target,1,newRatio,newRatio)
         this.children.splice(target+side,0,window)
+    }
+
+    removeAt(target) {
+        if (typeof target !== "number") target = this.children.indexOf(target)
+        if (target === -1) throw Error(`Target must be a number or a child. but got ${target+[]}`)
+        const ratioToAdd = this.ratio[target] / (this.ratio.length-1)
+        this.ratio.splice(target,1)
+        this.ratio = this.ratio.map(v=>v+ratioToAdd)
+        this.children.splice(target,1)
     }
 }
 
